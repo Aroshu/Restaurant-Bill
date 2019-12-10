@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+
+    <style>
+        body {
+            margin: auto;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        .stars {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width: 100%;
+            height: 100%;
+            display: block;
+            background: url(http://www.script-tutorials.com/demos/360/images/stars.png) repeat top center;
+            z-index: 0;
+        }
+
+        /* .stars {} */
+
+        #wall {
+            overflow: hidden;
+            position: relative;
+            margin: auto;
+            height: 100vh;
+            width: 100vw;
+            background-image: url(wall.jpg);
+        }
+
+        #spaceShip img {
+            height: 75px;
+            width: 100px;
+            /* border: 2px solid red; */
+        }
+
+        #spaceShip {
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        #circle {
+            position: absolute;
+            height: 235px;
+            width: 235px;
+            /* border: 2px solid white; */
+            border-radius: 157px;
+            top: 0;
+            bottom: 61px;
+            margin: auto;
+            left: 198px;
+            right: 0;
+        }
+
+        .Stone {
+            height: 100px;
+            width: 100px;
+            position: absolute;
+            /* border: 2px solid yellow; */
+        }
+
+        #gameOver {
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            margin: auto;
+            height: fit-content;
+            width: fit-content;
+        }
+
+        .bullets {
+            position: absolute;
+            width: 15px !important;
+            height: 15px !important;
+            left: 0;
+            /* right: 0; */
+            /* top: 0; */
+            /* bottom: 0; */
+            margin: auto;
+            /* border: 2px solid green; */
+        }
+
+        h1 {
+            float: right;
+            color: white;
+            border: 2px solid white;
+        }
+
+        .Score {
+            float: left;
+            border: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="wall">
+
+        <div class="stars"></div>
+        <div class="twinkling"></div>
+
+        <div id="spaceShip">
+            <img src="spaceship.png" alt="">
+        </div>
+        <div id="bullet"></div>
+        <h1>CHANCES:<span id="chance">5</span></h1>
+        <div id="circle"></div>
+        <div id="gameOver" style="display: none;">
+            <img src="zJWTDC.png" alt="">
+        </div>
+        <h1 class="Score">SCORE:<span id="score"></span></h1>
+    </div>
+    <script>
+        let exploid = new Audio()
+        exploid.src = "Arcade Explo A.wav";
+
+        // let startSound = new Audio()
+        // startSound.src = "Happiness.mp3"
+        let Game = {
+            fire: true,
+            checked: false,
+            startGame: true,
+            keys: [],
+            chances: 5,
+            stones: 8,
+            // hideSpaceShip() {
+            //     let moonLeft = circle.offsetLeft;
+            //     let moonRight = circle.offsetLeft + circle.offsetWidth;
+            //     let spaceShipRight = spaceShip.offsetLeft + spaceShip.offsetWidth;
+
+            //     if (spaceShipRight > moonLeft && spaceShipRight < moonRight) {
+            //         spaceShip.style.visibility = "hidden";
+            //     } else {
+            //         spaceShip.style.visibility = "visible";
+            //     }
+            // },
+            isAllOutside() {
+
+                return Array.from(Game.allStones).filter((stoneImg) => {
+
+                    let stoneTop = stoneImg.offsetTop;
+                    let stoneBottom = stoneImg.offsetTop + stoneImg.offsetHeight;
+                    let stoneLeft = stoneImg.offsetLeft;
+                    let stoneRight = stoneImg.offsetLeft + stoneImg.offsetWidth;
+
+                    let spaceShipTop = spaceShip.offsetTop;
+                    let spaceShipBottom = spaceShip.offsetTop + spaceShip.offsetHeight;
+                    let spaceShipLeft = spaceShip.offsetLeft;
+                    let spaceShipRight = spaceShip.offsetLeft + spaceShip.offsetWidth;
+
+
+                    let checkBounds = stoneBottom > spaceShipTop && stoneRight > spaceShipLeft && stoneLeft < spaceShipRight && stoneTop < spaceShipBottom;
+
+                    return checkBounds;
+
+                }).length == 0;
+
+
+            },
+            addHurdles() {
+
+                for (let index = 0; index < Game.stones; index++) {
+                    let stoneImg = document.createElement("img");
+                    stoneImg.src = "Stone.png";
+                    stoneImg.className = "Stone";
+                    stoneImg.style.left = (Math.random() * window.innerWidth) + 'px'
+                    stoneImg.style.top = 0;
+                    wall.appendChild(stoneImg);
+
+                    key = setInterval(() => {
+
+                        let stoneTop = stoneImg.offsetTop;
+                        let stoneBottom = stoneImg.offsetTop + stoneImg.offsetHeight;
+                        let stoneLeft = stoneImg.offsetLeft;
+                        let stoneRight = stoneImg.offsetLeft + stoneImg.offsetWidth;
+
+                        let spaceShipTop = spaceShip.offsetTop;
+                        let spaceShipBottom = spaceShip.offsetTop + spaceShip.offsetHeight;
+                        let spaceShipLeft = spaceShip.offsetLeft;
+                        let spaceShipRight = spaceShip.offsetLeft + spaceShip.offsetWidth;
+
+                        if (stoneTop < window.innerHeight) {
+                            let newTop = parseFloat(stoneImg.style.top) + 1;
+                            stoneImg.style.top = newTop + 'px';
+                        } else {
+                            stoneImg.style.top = 0;
+                            stoneImg.style.left = (Math.random() * window.innerWidth) + 'px'
+                        }
+
+
+                        if (!Game.checked && stoneBottom > spaceShipTop && stoneRight > spaceShipLeft && stoneLeft < spaceShipRight && stoneTop < spaceShipBottom) {
+                            // console.log("destroyed")
+
+                            Game.checked = true;
+                            if (Game.chances > 0) {
+                                exploid.play();
+                                chance.innerText = +chance.innerText - 1;
+                                Game.chances = chance.innerText;
+                                if (Game.chances == 0) {
+                                    Game.onGameOver();
+                                }
+                            }
+                            Game.startGame;
+                            // spaceShip.style.opacity = 0.5;
+                        } else {
+                            // spaceShip.style.opacity = 1;
+                        }
+
+                        Game.addFire()
+
+                    }, 20 + index * 10);
+                    Game.keys.push(key)
+
+
+                }
+                Game.allStones = document.querySelectorAll('.Stone');
+            },
+            onGameOver() {
+                // exploid.play();
+                gameOver.style.display = "block";
+                Game.keys.forEach(key => {
+                    clearInterval(key)
+                    Game.startGame = false;
+                    Game.fire = false;
+                });
+            },
+            moveSpaceShip() {
+                let key = setInterval(() => {
+                    if (Game.startGame) {
+                        let spacShipBottom = spaceShip.offsetHeight + spaceShip.offsetTop;
+
+                        if (spacShipBottom <= window.innerHeight) {
+                            spaceShip.style.top = (spaceShip.offsetTop + 1) + 'px';
+
+                        } else {
+                            Game.onGameOver();
+                        }
+
+                        if (Game.isAllOutside()) {
+                            Game.checked = false;
+                        }
+
+                        // Game.hideSpaceShip();
+                    }
+                }, 100);
+
+            },
+            moveLeft() {
+                spaceShip.style.left = (spaceShip.offsetLeft - 5) + 'px';
+            },
+            moveRight() {
+                spaceShip.style.left = (spaceShip.offsetLeft + 5) + 'px';
+            },
+            moveTop() {
+                spaceShip.style.top = (spaceShip.offsetTop - 5) + 'px';
+            },
+            moveBottom() {
+                spaceShip.style.top = (spaceShip.offsetTop + 5) + 'px';
+            },
+            addFire() {
+                document.body.onkeypress = function (evt) {
+                    if (!Game.fire) {
+                        return
+                    }
+                    let keyPressed = String.fromCharCode(event.keyCode);
+                    if (keyPressed == "f") {
+                        let Bullets = document.createElement('img');
+                        Bullets.src = "bullet.png";
+                        Bullets.className = "bullets";
+                        Bullets.style.top = (spaceShip.offsetTop) + 'px';
+                        Bullets.style.left = (spaceShip.getBoundingClientRect().left - 8 + spaceShip.offsetWidth / 2) + 'px';
+                        // Bullets.style.right = (spaceShip.offsetLeft + spaceShip.offsetWidth) + 'px';
+
+                        wall.appendChild(Bullets)
+
+                        key = setInterval(() => {
+                            let Bullet = parseFloat(Bullets.offsetTop) - 1;
+                            Bullets.style.top = Bullet + 'px';
+
+                            return Array.from(Game.allStones).forEach((stoneImg) => {
+                                let bulletTop = (Bullets.getBoundingClientRect().top) + 'px';
+                                let bulletBottom = (Bullets.getBoundingClientRect().bottom) + 'px';
+                                let bulletRight = (Bullets.getBoundingClientRect().right) + 'px';
+                                let bulletLeft = (Bullets.getBoundingClientRect().left) + 'px';
+
+                                let stonBottom = (stoneImg.offsetTop + stoneImg.offsetHeight) + 'px';
+                                let stonTop = (stoneImg.offsetTop) + 'px';
+                                let stonLeft = (stoneImg.offsetLeft) + 'px';
+                                let stonRight = (stoneImg.offsetLeft + stoneImg.offsetWidth) + 'px';
+
+                                if (bulletTop < stonBottom && bulletLeft < stonRight && bulletRight > stonLeft) {
+                                    stoneImg.style.display = "none"
+                                    exploid.currentTime = 0;
+                                    exploid.play()
+                                    score.innerText = (+score.innerText + 5);
+                                    // clearInterval(Bullets.key)
+                                    return true
+                                }
+                            })
+
+                        }, 30);
+                        Game.keys.push(key)
+                    }
+                }
+            },
+            bindkey(evt) {
+                document.body.onkeydown = function (evt) {
+
+                    if (!Game.startGame) {
+                        return;
+                    }
+                    switch (evt.keyCode) {
+                        case 37:
+                            Game.moveLeft();
+                            console.log("left Key")
+                            break;
+
+                        case 38:
+                            Game.moveTop();
+                            console.log("top Key")
+                            break;
+
+                        case 39:
+                            Game.moveRight();
+                            console.log("right Key")
+                            break;
+
+                        case 40:
+                            Game.moveBottom();
+                            console.log("bottom Key")
+                            break;
+                    }
+                }
+            },
+            start() {
+                spaceShip.style.left = (innerWidth / 2.5) + 'px';
+                spaceShip.style.top = (innerHeight / 2) + 'px';
+
+                Game.moveSpaceShip();
+                Game.bindkey();
+                Game.moveLeft();
+                Game.moveRight();
+                Game.moveRight();
+                Game.moveBottom();
+                Game.addFire();
+                Game.addHurdles();
+                // Game.hideSpaceShip();
+            },
+        }
+        window.onload = function () {
+            Game.start();
+        }
+    </script>
+</body>
+
+</html>
