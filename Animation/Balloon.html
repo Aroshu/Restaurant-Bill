@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <!-- <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="/resources/demos/style.css"> -->
+
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+
+    <style>
+        body {
+            background: plum;
+        }
+
+        img {
+            position: absolute;
+            width: 50px;
+            top: 0;
+            bottom: 0;
+            margin: auto;
+        }
+
+        /* #draggable {
+            border: 2px solid purple;
+            width: 150px;
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            margin: auto;
+        } */
+
+        #draggable {
+            width: 150px;
+            height: 150px;
+            padding: 0.5em;
+        }
+    </style>
+</head>
+
+<body>
+    <img id="balloon" src="3.png" alt="" style="left: 0;">
+    <div style="height: 100px;border: 2px solid black;" id="draggable" class="ui-widget-content"></div>
+
+
+    <script>
+        let direction = "left";
+        setInterval(function () {
+            let currentLeft = parseFloat(balloon.style.left);
+
+            $(function () {
+                $("#draggable").draggable();
+            });
+
+            if (direction == "left") {
+                if ((currentLeft + 50) < window.innerWidth) {
+                    direction = "left"
+                } else {
+                    direction = "right"
+                }
+
+                let newBalloon = currentLeft + 1 + 'px';
+                balloon.style.left = newBalloon;
+
+            }
+
+            if (direction == "right") {
+                if (currentLeft == 0) {
+                    direction = "left"
+                } else {
+                    direction = "right"
+                }
+
+                let newBalloon = (currentLeft - 1) + 'px';
+                balloon.style.left = newBalloon;
+            }
+
+            let balloonRight = balloon.offsetLeft + balloon.offsetWidth;
+            let boxLeft = draggable.offsetLeft;
+            let boxRight = draggable.offsetLeft + draggable.offsetWidth;
+            if (balloonRight > boxLeft && balloonRight < boxRight) {
+                // draggable.style = "border:2px solid red;height:150px";
+                balloon.src = "0.png";
+
+            } else {
+                // draggable.style = "height:100px";
+                balloon.src = "3.png";
+            }
+
+
+        }, 20)
+// visibility:visible
+    </script>
+</body>
+
+</html>
