@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+
+
+    <style>
+        body {
+            position: relative;
+            height: 100vh;
+            width: 100vw;
+            margin: 0;
+        }
+
+        div {
+            text-align: center;
+            margin: auto;
+            right: 0;
+            left: 0;
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            height: fit-content;
+        }
+    </style>
+</head>
+
+<body>
+    <div>
+        <h1 id="countDown"></h1>
+        <img id="catPic" src="nationalpetday3.jpg" alt="" style="display: none;">
+    </div>
+
+
+    <script>
+        let num = 10;
+
+        let key = setInterval(function () {
+            //console.log(num);
+            countDown.innerText = num;
+            num--;
+            if (num == -1) {
+                countDown.style.display = "none";
+                //clear Interval
+                clearInterval(1);
+                
+                catPic.style.display = "inline-block";
+
+                // console.log("Error")
+            }
+        }, 1000)
+
+
+
+
+
+    </script>
+</body>
+
+</html>
